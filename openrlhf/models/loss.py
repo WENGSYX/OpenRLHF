@@ -8,6 +8,16 @@ import torch.nn.functional as F
 from .utils import masked_mean
 
 
+class LinearCrossEntropyLoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, *args, **kwargs):
+        from ..utils.cut_cross_entropy.linear_cross_entropy import linear_cross_entropy
+        return linear_cross_entropy(*args, **kwargs)
+
+
+
 class GPTLMLoss(nn.Module):
     """
     GPT Language Model Loss
@@ -16,16 +26,17 @@ class GPTLMLoss(nn.Module):
     def __init__(self, ring_attn_group=None, use_cce=False):
         super().__init__()
         self.IGNORE_INDEX = -100
-        self.loss = nn.CrossEntropyLoss(ignore_index=self.IGNORE_INDEX)
 
         self.use_cce = use_cce
         self.ring_attn_group = ring_attn_group
         if self.ring_attn_group:
             self.ring_attn_rank = dist.get_rank(self.ring_attn_group)
             self.ring_attn_world_size = dist.get_world_size(self.ring_attn_group)
+
         if self.use_cce:
-            from ..utils.cut_cross_entropy import linear_cross_entropy
-            self.loss = linear_cross_entropy
+            self.loss = LinearCrossEntropyLoss()
+        else:
+            self.loss = nn.CrossEntropyLoss(ignore_index=self.IGNORE_INDEX)
 
     def forward(self, logits: torch.Tensor, labels: torch.Tensor, lm_head_weight: torch.Tensor=None) -> torch.Tensor:
         # RingAttention
