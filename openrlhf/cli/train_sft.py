@@ -29,6 +29,7 @@ def train(args):
         lora_dropout=args.lora_dropout,
         ds_config=strategy.get_ds_train_config(is_actor=True),
         packing_samples=args.packing_samples,
+        use_cce=args.use_cce,
     )
     # configure tokenizer
     tokenizer = get_tokenizer(args.pretrain, model.model, "right", strategy, use_fast=not args.disable_fast_tokenizer)
@@ -185,6 +186,8 @@ if __name__ == "__main__":
         "It should be a divisor of the number of heads. "
         "A larger value may results in faster training but will consume more memory.",
     )
+    # cut-CE
+    parser.add_argument("--use_cce", action="store_true", default=False, help="Use Cut-CE loss")
 
     # LoRA
     parser.add_argument("--load_in_4bit", action="store_true", default=False)

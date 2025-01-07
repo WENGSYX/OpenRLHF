@@ -45,6 +45,7 @@ class Actor(nn.Module):
         ds_config=None,
         device_map=None,
         packing_samples=False,
+        use_cce=False,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -78,6 +79,10 @@ class Actor(nn.Module):
                 torch_dtype=torch.bfloat16 if bf16 else "auto",
                 device_map=device_map,
             )
+
+            if use_cce:
+                from ..utils.cut_cross_entropy.transformers import cce_patch
+                self.model = cce_patch(self.model)
 
             # LoRA
             if lora_rank > 0:

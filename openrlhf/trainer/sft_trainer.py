@@ -4,6 +4,7 @@ from abc import ABC
 import torch
 from torch.optim import Optimizer
 from tqdm import tqdm
+import deepspeed
 
 from openrlhf.models import GPTLMLoss
 from openrlhf.utils.distributed_sampler import DistributedSampler
@@ -54,8 +55,9 @@ class SFTTrainer(ABC):
         self.tokenizer = tokenizer
         self.optimizer = optim
         self.args = strategy.args
+        self.use_cce = self.args.use_cce
 
-        self.loss_fn = GPTLMLoss(ring_attn_group=self.strategy.ring_attn_group)
+        self.loss_fn = GPTLMLoss(ring_attn_group=self.strategy.ring_attn_group, use_cce=self.use_cce)
 
         # Mixtral 8*7b
         self.aux_loss = self.args.aux_loss_coef > 1e-8
@@ -167,10 +169,20 @@ class SFTTrainer(ABC):
                         for label, source_len in zip(labels, prompt_id_lens):
                             label[:source_len] = self.loss_fn.IGNORE_INDEX
 
-                gpt_loss = self.loss_fn(output.logits, labels)
-                loss = gpt_loss + aux_loss * self.args.aux_loss_coef
-                self.strategy.backward(loss, self.model, self.optimizer)
-                self.strategy.optimizer_step(self.optimizer, self.model, self.scheduler)
+                if self.use_cce:
+                    paramlist = list(list(self.model.modules())[-1].parameters())
+                    with deepspeed.zero.GatheredParameters(paramlist, modifier_rank=0):
+                        lm_head_weight = paramlist[0]
+                        gpt_loss = self.loss_fn(output.hidden_states, labels, lm_head_weight)
+                        loss = gpt_loss + aux_loss * self.args.aux_loss_coef
+                        self.strategy.backward(loss, self.model, self.optimizer)
+                        self.strategy.optimizer_step(self.optimizer, self.model, self.scheduler)
+
+                else:
+                    gpt_loss = self.loss_fn(output.logits, labels)
+                    loss = gpt_loss + aux_loss * self.args.aux_loss_coef
+                    self.strategy.backward(loss, self.model, self.optimizer)
+                    self.strategy.optimizer_step(self.optimizer, self.model, self.scheduler)
 
                 loss_sum += gpt_loss.item()
                 logs_dict = {

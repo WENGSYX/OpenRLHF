@@ -65,7 +65,7 @@ OpenRLHF 是一个基于 Ray、DeepSpeed 和 HF Transformers 构建的高性能 
 - 支持使用 Wandb（`--use_wandb`）和 TensorBoard（`--use_tensorboard`）进行日志记录。  
 - 支持从检查点恢复训练（`--load_checkpoint` 和 `--save_steps`）。  
 - 提供了多节点训练脚本, 比如 [DPO](./examples/scripts/train_llama_slurm.sh) 和 [RLHF](./examples/scripts/train_ppo_llama_ray_slurm.sh)
-
+- 支持 SFT 阶段使用[Cut-Cross-Entropy](https://arxiv.org/abs/2411.09009)（`--use_cce`），显存节省20%-100%。
 
 ### PPO 支持矩阵
 

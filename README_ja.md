@@ -61,6 +61,7 @@ OpenRLHFは、Ray、DeepSpeed、およびHF Transformersを基盤とした高性
 - Wandb（`--use_wandb`）およびTensorBoard（`--use_tensorboard`）によるログ記録のサポート。
 - チェックポイントの回復機能（`--load_checkpoint`および`--save_steps`）。
 - [DPO](./examples/scripts/train_llama_slurm.sh)および[Ray PPO](./examples/scripts/train_ppo_llama_ray_slurm.sh)などのマルチノードトレーニングスクリプトを提供。
+- SFTステージで[Cut-Cross-Entropy](https://arxiv.org/abs/2411.09009)（`--use_cce`）の使用をサポートし、GPUメモリを20%-100%節約。
 
 ### PPOサポートマトリックス
 
