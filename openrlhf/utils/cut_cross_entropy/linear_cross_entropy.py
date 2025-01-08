@@ -7,9 +7,9 @@ from typing import TYPE_CHECKING
 import torch
 import torch.nn as nn
 
-from cut_cross_entropy.constants import IGNORE_INDEX
-from cut_cross_entropy.doc import CCE_OPTS_DOC, LINEAR_CROSS_ENTROPY_DOC, add_doc_start
-from cut_cross_entropy.torch_compile import torch_compile_linear_cross_entropy
+from .constants import IGNORE_INDEX
+from .doc import CCE_OPTS_DOC, LINEAR_CROSS_ENTROPY_DOC, add_doc_start
+from .torch_compile import torch_compile_linear_cross_entropy
 
 
 class LinearCrossEntropyImpl(enum.IntEnum):
@@ -21,7 +21,7 @@ class LinearCrossEntropyImpl(enum.IntEnum):
 PLATFORM_SYSTEM = platform.system()
 
 if TYPE_CHECKING or PLATFORM_SYSTEM != "Darwin":
-    from cut_cross_entropy.cce import cce_linear_cross_entropy
+    from .cce import cce_linear_cross_entropy
 
     LCE_IMPL_DEFAULT = LinearCrossEntropyImpl.CCE
 else:

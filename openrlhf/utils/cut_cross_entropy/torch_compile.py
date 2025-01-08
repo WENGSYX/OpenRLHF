@@ -2,9 +2,9 @@
 import torch
 import torch.nn.functional as F
 
-from cut_cross_entropy.constants import IGNORE_INDEX
-from cut_cross_entropy.doc import LINEAR_CROSS_ENTROPY_DOC, add_doc_start
-from cut_cross_entropy.utils import (
+from .constants import IGNORE_INDEX
+from .doc import LINEAR_CROSS_ENTROPY_DOC, add_doc_start
+from .utils import (
     _build_flat_valids,
     handle_reduction_none,
     softcapping,

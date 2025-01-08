@@ -3,8 +3,8 @@ import torch
 import triton
 import triton.language as tl
 
-from cut_cross_entropy.tl_autotune import cce_backward_autotune
-from cut_cross_entropy.tl_utils import (
+from .tl_autotune import cce_backward_autotune
+from .tl_utils import (
     b_bin_fn,
     tl_and_reduce_fn,
     tl_lock_add,

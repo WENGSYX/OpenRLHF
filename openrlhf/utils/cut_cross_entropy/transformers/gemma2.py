@@ -18,7 +18,7 @@ from transformers.utils import (
     replace_return_docstrings,
 )
 
-from ..linear_cross_entropy import linear_cross_entropy
+from .. import linear_cross_entropy
 
 from .utils import PatchOptions, TransformersModelT
 

@@ -4,12 +4,12 @@ from typing import cast
 
 import torch
 
-from cut_cross_entropy.cce_backward import cce_backward_kernel
-from cut_cross_entropy.cce_lse_forward import cce_lse_forward_kernel
-from cut_cross_entropy.constants import IGNORE_INDEX
-from cut_cross_entropy.doc import CCE_OPTS_DOC, LINEAR_CROSS_ENTROPY_DOC, add_doc_start
-from cut_cross_entropy.indexed_dot import indexed_neg_dot_forward_kernel
-from cut_cross_entropy.utils import (
+from .cce_backward import cce_backward_kernel
+from .cce_lse_forward import cce_lse_forward_kernel
+from .constants import IGNORE_INDEX
+from .doc import CCE_OPTS_DOC, LINEAR_CROSS_ENTROPY_DOC, add_doc_start
+from .indexed_dot import indexed_neg_dot_forward_kernel
+from .utils import (
     _build_flat_valids,
     _handle_eps,
     handle_reduction_none,

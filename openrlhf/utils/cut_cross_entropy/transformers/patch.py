@@ -3,7 +3,7 @@ from typing import overload
 
 import transformers
 
-from cut_cross_entropy.linear_cross_entropy import LCE_IMPL_DEFAULT, LinearCrossEntropyImpl
+from ..linear_cross_entropy import LCE_IMPL_DEFAULT, LinearCrossEntropyImpl
 
 from .gemma2 import patch_gemma2
 from .llama import patch_llama
@@ -61,4 +61,4 @@ def cce_patch(
         case "mistral":
             return patch_mistral(model_type_or_model, patch_options)
         case _:
-            raise RuntimeError(f"Unknown model type {model_type}, if you want to use Cut-Cross-Entropy, the model type must be in [llama, phi3, gemma2, mistral]")
+            raise RuntimeError(f"Unknown model type {model_type}")

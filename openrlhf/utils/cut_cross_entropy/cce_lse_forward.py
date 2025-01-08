@@ -5,8 +5,8 @@ import torch
 import triton
 import triton.language as tl
 
-from cut_cross_entropy.tl_autotune import cce_forward_autotune
-from cut_cross_entropy.tl_utils import b_bin_fn, tl_logaddexp, tl_softcapping
+from .tl_autotune import cce_forward_autotune
+from .tl_utils import b_bin_fn, tl_logaddexp, tl_softcapping
 
 
 def _cce_lse_forward_kernel(
